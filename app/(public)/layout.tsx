@@ -1,3 +1,4 @@
+import Footer from "@/components/shared/footer";
 import NavBar from "@/components/shared/nav-bar";
 
 interface PublicLayoutProps {
@@ -9,7 +10,7 @@ const PublicLayout = ({ children }: PublicLayoutProps) => {
     <>
       <NavBar />
       {children}
-      {/* footer */}
+      <Footer />
     </>
   );
 };
