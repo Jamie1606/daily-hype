@@ -2,7 +2,7 @@ import url from "@/constant/url";
 import Link from "next/link";
 import NavBarRight from "./nav-bar-right";
 
-interface NavBarProps {}
+// interface NavBarProps {}
 
 export default function NavBar() {
   return (

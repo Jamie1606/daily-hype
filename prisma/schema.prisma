@@ -1,0 +1,369 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  ADMIN
+  STAFF
+  USER
+}
+
+enum UserGender {
+  M
+  F
+}
+
+enum ProductStatus {
+  OUT_OF_STOCK
+  IN_STOCK
+  LOW_STOCK
+  REMOVED
+}
+
+enum UserStatus {
+  ACTIVE
+  BANNED
+  DELETED
+  INACTIVE
+}
+
+enum OrderStatus {
+  PENDING
+  PLANNED
+  COMPLETED
+  CANCELLED
+}
+
+enum PaymentStatus {
+  PENDING
+  COMPLETED
+  CANCELLED
+}
+
+enum AddressStatus {
+  ACTIVE
+  DELETED
+}
+
+enum DeliveryStatus {
+  PENDING
+  IN_PROGRESS
+  DELIVERED
+  CANCELLED
+}
+
+enum RefundStatus {
+  PENDING
+  COMPLETED
+  CANCELLED
+}
+
+model Category {
+  category_id String   @id @default(uuid())
+  name        String   @unique @db.VarChar(50)
+  created_at  DateTime @default(now())
+
+  productCategories ProductCategory[]
+}
+
+model Gender {
+  gender_id  String   @id @default(uuid())
+  name       String   @unique @db.VarChar(50)
+  created_at DateTime @default(now())
+
+  products Product[]
+}
+
+model Color {
+  color_id   String   @id @default(uuid())
+  name       String   @unique @db.VarChar(50)
+  hex_code   String   @db.Char(6)
+  created_at DateTime @default(now())
+
+  productImages   ProductImage[]
+  productVariants ProductVariant[]
+}
+
+model Size {
+  size_id    String   @id @default(uuid())
+  name       String   @unique @db.VarChar(50)
+  created_at DateTime @default(now())
+
+  productVariants ProductVariant[]
+}
+
+model Product {
+  product_id   String        @id @default(uuid())
+  name         String        @unique @db.VarChar(100)
+  description  String?       @db.Text
+  unit_price   Decimal       @db.Decimal(10, 2)
+  status       ProductStatus @default(IN_STOCK)
+  total_rating Int           @default(0) @db.Integer
+  gender_id    String
+  created_at   DateTime      @default(now())
+  updated_at   DateTime      @updatedAt
+
+  gender Gender @relation(fields: [gender_id], references: [gender_id])
+
+  productCategories ProductCategory[]
+  productImages     ProductImage[]
+  productVariants   ProductVariant[]
+  wishlists         Wishlist[]
+}
+
+model ProductCategory {
+  product_id  String
+  category_id String
+  created_at  DateTime @default(now())
+
+  category Category @relation(fields: [category_id], references: [category_id])
+  product  Product  @relation(fields: [product_id], references: [product_id])
+
+  @@id([product_id, category_id])
+}
+
+model ProductImage {
+  product_id String
+  color_id   String
+  is_primary Boolean  @default(false) @db.Boolean
+  url        String   @db.VarChar(255)
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  color   Color   @relation(fields: [color_id], references: [color_id])
+  product Product @relation(fields: [product_id], references: [product_id])
+
+  @@id([product_id, color_id])
+}
+
+model ProductVariant {
+  variant_id String        @id @default(uuid())
+  size_id    String
+  color_id   String
+  product_id String
+  quantity   Int           @db.Integer
+  status     ProductStatus @default(IN_STOCK)
+  created_at DateTime      @default(now())
+  updated_at DateTime      @updatedAt
+
+  product Product @relation(fields: [product_id], references: [product_id])
+  size    Size    @relation(fields: [size_id], references: [size_id])
+  color   Color   @relation(fields: [color_id], references: [color_id])
+
+  carts             Cart[]
+  productOrderItems ProductOrderItem[]
+}
+
+model EndUser {
+  user_id    String      @id @default(uuid())
+  name       String      @db.VarChar(100)
+  email      String      @unique @db.VarChar(255)
+  password   String      @db.VarChar(255)
+  gender     UserGender?
+  phone      String?     @unique @db.Char(8)
+  role       Role        @default(USER)
+  status     UserStatus  @default(ACTIVE)
+  created_at DateTime    @default(now())
+  updated_at DateTime    @updatedAt
+
+  productOrders ProductOrder[]
+  addressBooks  AddressBook[]
+  reviews       Review[]
+  carts         Cart[]
+  wishlists     Wishlist[]
+  userSessions  UserSession[]
+  deliveries    Delivery[]
+
+  @@index([email, status])
+}
+
+model UserSession {
+  session_id       String   @id @default(uuid())
+  device           String   @db.VarChar(50)
+  refresh_token    String   @db.VarChar(255)
+  expired_at       DateTime @db.Timestamptz()
+  last_accessed_at DateTime @db.Timestamptz()
+  is_active        Boolean  @default(true) @db.Boolean
+  user_id          String
+  created_at       DateTime @default(now())
+
+  endUser EndUser @relation(fields: [user_id], references: [user_id])
+}
+
+model Wishlist {
+  wish_id    String   @id @default(uuid())
+  product_id String
+  user_id    String
+  created_at DateTime @default(now())
+
+  endUser EndUser @relation(fields: [user_id], references: [user_id])
+  product Product @relation(fields: [product_id], references: [product_id])
+}
+
+model Cart {
+  cart_id    String   @id @default(uuid())
+  variant_id String
+  user_id    String
+  quantity   Int      @db.Integer
+  created_at DateTime @default(now())
+
+  productVariant ProductVariant @relation(fields: [variant_id], references: [variant_id])
+  endUser        EndUser        @relation(fields: [user_id], references: [user_id])
+
+  @@index([user_id])
+}
+
+model ProductOrder {
+  order_id     String      @id @default(uuid())
+  total_amount Decimal     @db.Decimal(10, 2)
+  address_id   String
+  status       OrderStatus @default(PENDING)
+  user_id      String
+  created_at   DateTime    @default(now())
+  updated_at   DateTime    @updatedAt
+
+  endUser     EndUser     @relation(fields: [user_id], references: [user_id])
+  addressBook AddressBook @relation(fields: [address_id], references: [address_id])
+
+  productOrderItems ProductOrderItem[]
+  payments          Payment[]
+  deliveryDetails   DeliveryDetail[]
+
+  @@index([user_id])
+  @@index([user_id, status])
+}
+
+model ProductOrderItem {
+  order_id   String
+  variant_id String
+  quantity   Int         @db.Integer
+  amount     Decimal     @db.Decimal(10, 2)
+  status     OrderStatus @default(PENDING)
+  created_at DateTime    @default(now())
+  updated_at DateTime    @updatedAt
+
+  productOrder   ProductOrder   @relation(fields: [order_id], references: [order_id])
+  productVariant ProductVariant @relation(fields: [variant_id], references: [variant_id])
+
+  reviews Review[]
+  refunds Refund[]
+
+  @@id([order_id, variant_id])
+}
+
+model Payment {
+  payment_id     String        @id @default(uuid())
+  payment_method String        @db.VarChar(25)
+  amount         Int           @db.Integer
+  status         PaymentStatus @default(PENDING)
+  transaction_id String        @db.VarChar(255)
+  order_id       String
+  created_at     DateTime      @default(now())
+  updated_at     DateTime      @updatedAt
+
+  productOrder ProductOrder @relation(fields: [order_id], references: [order_id])
+}
+
+model AddressBook {
+  address_id    String        @id @default(uuid())
+  name          String        @db.VarChar(50)
+  block_number  Int           @db.Integer
+  street_name   String        @db.VarChar(50)
+  unit_no       String        @db.VarChar(10)
+  building_name String        @db.VarChar(50)
+  postal_code   String        @db.Char(6)
+  user_id       String
+  status        AddressStatus @default(ACTIVE)
+  created_at    DateTime      @default(now())
+  updated_at    DateTime      @updatedAt
+
+  endUser EndUser @relation(fields: [user_id], references: [user_id])
+
+  productOrders ProductOrder[]
+}
+
+model Review {
+  review_id   String   @id @default(uuid())
+  rating      Int      @db.Integer
+  description String?  @db.Text
+  order_id    String
+  variant_id  String
+  user_id     String
+  created_at  DateTime @default(now())
+
+  productOrderItem ProductOrderItem @relation(fields: [order_id, variant_id], references: [order_id, variant_id])
+  endUser          EndUser          @relation(fields: [user_id], references: [user_id])
+
+  reviewImages ReviewImage[]
+}
+
+model ReviewImage {
+  image_id   String   @id @default(uuid())
+  url        String   @db.VarChar(255)
+  review_id  String
+  created_at DateTime @default(now())
+
+  review Review @relation(fields: [review_id], references: [review_id])
+}
+
+model Delivery {
+  delivery_id   String         @id @default(uuid())
+  delivery_date DateTime       @db.Timestamptz()
+  status        DeliveryStatus @default(PENDING)
+  user_id       String
+  created_at    DateTime       @default(now())
+  updated_at    DateTime       @updatedAt
+
+  endUser EndUser @relation(fields: [user_id], references: [user_id])
+
+  deliveryDetails DeliveryDetail[]
+}
+
+model DeliveryDetail {
+  delivery_id String
+  order_id    String
+  status      DeliveryStatus @default(PENDING)
+  created_at  DateTime       @default(now())
+  updated_at  DateTime       @updatedAt
+
+  delivery     Delivery     @relation(fields: [delivery_id], references: [delivery_id])
+  productOrder ProductOrder @relation(fields: [order_id], references: [order_id])
+
+  @@id([delivery_id, order_id])
+}
+
+model Refund {
+  refund_id   String       @id @default(uuid())
+  refund_date DateTime     @db.Timestamptz()
+  description String?      @db.Text
+  reason      String       @db.VarChar(150)
+  status      RefundStatus @default(PENDING)
+  order_id    String
+  variant_id  String
+  created_at  DateTime     @default(now())
+  updated_at  DateTime     @updatedAt
+
+  productOrderItem ProductOrderItem @relation(fields: [order_id, variant_id], references: [order_id, variant_id])
+
+  refundImages RefundImage[]
+}
+
+model RefundImage {
+  image_id   String   @id @default(uuid())
+  url        String   @db.VarChar(255)
+  refund_id  String
+  created_at DateTime @default(now())
+
+  refund Refund @relation(fields: [refund_id], references: [refund_id])
+}
