@@ -3,19 +3,48 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import LoadingIcon from "@/icons/svg/loading";
-import { useActionState } from "react";
+import { useActionState, useEffect } from "react";
 import { performSignUp } from "./action";
 import { cn } from "@/lib/utils";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import InfoIcon from "@/icons/svg/info";
+import { useRouter } from "next/navigation";
+import url from "@/constant/url";
 
 export default function SignUpForm() {
+  const router = useRouter();
   const [state, action, isPending] = useActionState(performSignUp, null);
+
+  useEffect(() => {
+    if (state?.success) {
+      setTimeout(() => {
+        router.push(url.SIGNIN);
+      }, 2000);
+    }
+  }, [state]);
 
   return (
     <form action={action} className="flex flex-col">
+      {state !== null &&
+        (state.success ? (
+          <Alert variant="success" className="mb-8">
+            <InfoIcon width={20} height={20} className="fill-green-600" />
+            <AlertTitle className="text-green-600 font-semibold">Message</AlertTitle>
+            <AlertDescription className="text-green-600">{state.message}</AlertDescription>
+          </Alert>
+        ) : (
+          state.message && (
+            <Alert variant="error" className="mb-8">
+              <InfoIcon width={20} height={20} className="fill-red-600" />
+              <AlertTitle className="text-red-600 font-semibold">Error</AlertTitle>
+              <AlertDescription className="text-red-600">{state?.message}</AlertDescription>
+            </Alert>
+          )
+        ))}
       <label className="text-center text-2xl font-semibold">Create Your Account</label>
 
       <label className="mt-4 text-[15px]">Name*</label>
-      <Input name="name" value={state?.defaultData?.name || ""} className={cn("w-[500px] mt-1", state?.errors?.name && "border-red-600")} variant="input" type="text" placeholder="Name" required />
+      <Input name="name" value={state?.defaultData?.name || ""} className={cn("w-[500px] mt-1", state?.errors?.name && "border-red-600")} variant="input" type="text" placeholder="Name" required disabled={isPending} clear={state?.success} />
       {state?.errors?.name &&
         state.errors.name.length > 0 &&
         state.errors.name.map((error, index) => (
@@ -25,7 +54,7 @@ export default function SignUpForm() {
         ))}
 
       <label className="mt-4 text-[15px]">Email*</label>
-      <Input name="email" value={state?.defaultData?.email || ""} className={cn("w-[500px] mt-1", state?.errors?.email && "border-red-600")} variant="input" type="email" placeholder="user@gmail.com" required />
+      <Input name="email" value={state?.defaultData?.email || ""} className={cn("w-[500px] mt-1", state?.errors?.email && "border-red-600")} variant="input" type="email" placeholder="user@gmail.com" required disabled={isPending} clear={state?.success} />
       {state?.errors?.email &&
         state.errors.email.length > 0 &&
         state.errors.email.map((error, index) => (
@@ -35,7 +64,7 @@ export default function SignUpForm() {
         ))}
 
       <label className="mt-4 text-[15px]">Password*</label>
-      <Input name="password" value={state?.defaultData?.password || ""} className={cn("w-[500px] mt-1", state?.errors?.password && "border-red-600")} variant="input" type="password" placeholder="password" minLength={8} required />
+      <Input name="password" value={state?.defaultData?.password || ""} className={cn("w-[500px] mt-1", state?.errors?.password && "border-red-600")} variant="input" type="password" placeholder="password" minLength={8} required disabled={isPending} clear={state?.success} />
       {state?.errors?.password &&
         state.errors.password.length > 0 &&
         state.errors.password.map((error, index) => (
@@ -45,7 +74,7 @@ export default function SignUpForm() {
         ))}
 
       <label className="mt-4 text-[15px]">Confirm Password*</label>
-      <Input name="confirm-password" value={state?.defaultData?.confirmPassword || ""} className={cn("w-[500px] mt-1", state?.errors?.confirmPassword && "border-red-600")} variant="input" type="password" placeholder="confirm password" minLength={8} required />
+      <Input name="confirm-password" value={state?.defaultData?.confirmPassword || ""} className={cn("w-[500px] mt-1", state?.errors?.confirmPassword && "border-red-600")} variant="input" type="password" placeholder="confirm password" minLength={8} required disabled={isPending} clear={state?.success} />
       {state?.errors?.confirmPassword &&
         state.errors.confirmPassword.length > 0 &&
         state.errors.confirmPassword.map((error, index) => (
@@ -54,7 +83,7 @@ export default function SignUpForm() {
           </label>
         ))}
 
-      <Button className="mt-6 w-[8rem] h-[2.6rem] mx-auto" variant="primary">
+      <Button className="mt-6 w-[8rem] h-[2.6rem] mx-auto" variant="primary" disabled={isPending}>
         {isPending ? <LoadingIcon width={24} height={24} className="fill-white" /> : <span>Sign Up</span>}
       </Button>
     </form>

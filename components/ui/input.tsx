@@ -10,7 +10,7 @@ const inputVariants = cva("flex h-10 w-full rounded-md border border-input bg-ba
   variants: {
     variant: {
       default: "ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
-      input: "focus-visible:border-[#667EEA] focus-visible:border-2 focus-visible:outline-none",
+      input: "focus-visible:border-brand focus-visible:border-2 focus-visible:outline-none",
     },
     defaultVariants: {
       variant: "default",
@@ -18,15 +18,24 @@ const inputVariants = cva("flex h-10 w-full rounded-md border border-input bg-ba
   },
 });
 
-export interface InputProps extends React.InputHTMLAttributes<HTMLInputElement>, VariantProps<typeof inputVariants> {}
+export interface InputProps extends React.InputHTMLAttributes<HTMLInputElement>, VariantProps<typeof inputVariants> {
+  clear?: boolean;
+}
 
-const Input = React.forwardRef<HTMLInputElement, InputProps>(({ className, variant, value, type, onChange, ...props }, ref) => {
+const Input = React.forwardRef<HTMLInputElement, InputProps>(({ className, variant, value, type, clear = false, onChange, ...props }, ref) => {
   const inputRef = React.useRef<HTMLInputElement>(null);
   React.useImperativeHandle(ref, () => inputRef.current as HTMLInputElement);
 
   const [isCancelVisible, setIsCancelVisible] = React.useState(false);
   const [isPasswordVisible, setIsPasswordVisible] = React.useState(false);
   const [inputValue, setInputValue] = React.useState(value);
+
+  React.useEffect(() => {
+    if (clear) {
+      setInputValue("");
+      setIsCancelVisible(false);
+    }
+  }, [clear]);
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setIsCancelVisible(!!event.target.value);

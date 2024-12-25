@@ -21,7 +21,7 @@ const SignInPage = () => {
         </div>
       </div>
       <div className="flex flex-col w-full mt-20 items-center">
-        <div className="relative w-[600px] h-[600px] overflow-hidden rounded-3xl">
+        <div className="relative w-[600px] h-[95%] overflow-hidden rounded-3xl">
           <Image
             src="/sign-in-bg.webp"
             alt="Image"

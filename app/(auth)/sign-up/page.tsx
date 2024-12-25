@@ -10,7 +10,7 @@ const SignUpPage = () => {
         <Link className="text-3xl tracking-wider font-bold cursor-pointer max-w-fit self-start" href={url.HOME}>
           DAILYHYPE
         </Link>
-        <div className="relative w-[600px] h-[600px] overflow-hidden rounded-3xl mt-12">
+        <div className="relative w-[600px] h-[95%] overflow-hidden rounded-3xl mt-12">
           <Image
             src="/sign-up-bg.webp"
             alt="Image"
