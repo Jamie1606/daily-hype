@@ -2,6 +2,7 @@ import url from "@/constant/url";
 import Image from "next/image";
 import Link from "next/link";
 import SignUpForm from "./sign-up-form";
+import Form from "./form";
 
 const SignUpPage = () => {
   return (
@@ -24,13 +25,7 @@ const SignUpPage = () => {
         </div>
       </div>
       <div className="flex flex-col w-full justify-center items-center">
-        <SignUpForm />
-        <label className="mt-6 text-[14px]">
-          Already have an account?&nbsp;
-          <Link className="text-blue-600 hover:underline" href={url.SIGNIN}>
-            Sign In
-          </Link>
-        </label>
+        <Form />
       </div>
     </div>
   );

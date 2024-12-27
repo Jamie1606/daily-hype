@@ -167,16 +167,18 @@ model ProductVariant {
 }
 
 model EndUser {
-  user_id    String      @id @default(uuid())
-  name       String      @db.VarChar(100)
-  email      String      @unique @db.VarChar(255)
-  password   String      @db.VarChar(255)
-  gender     UserGender?
-  phone      String?     @unique @db.Char(8)
-  role       Role        @default(USER)
-  status     UserStatus  @default(ACTIVE)
-  created_at DateTime    @default(now())
-  updated_at DateTime    @updatedAt
+  user_id         String      @id @default(uuid())
+  name            String      @db.VarChar(100)
+  email           String      @unique @db.VarChar(255)
+  password        String      @db.VarChar(255)
+  gender          UserGender?
+  phone           String?     @unique @db.Char(8)
+  role            Role        @default(USER)
+  code            String?      @db.Char(6)
+  code_expired_at DateTime?    @db.Timestamptz()
+  status          UserStatus  @default(ACTIVE)
+  created_at      DateTime    @default(now())
+  updated_at      DateTime    @updatedAt
 
   productOrders ProductOrder[]
   addressBooks  AddressBook[]
