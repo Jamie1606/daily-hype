@@ -20,24 +20,24 @@ export async function performSignUp(_: SignUpActionResponse | null, formData: Fo
     return { success: false, message: "", errors: result.error.flatten().fieldErrors, defaultData: data };
   }
 
-  const hashedPassword = bcrypt.hashSync(data.password, 10);
-  return { success: true, message: "Your account is successfully created.", defaultData: undefined };
+  const hashedPassword = await bcrypt.hash(data.password, 10);
+  // return { success: true, message: "Your account is successfully created.", defaultData: undefined };
 
-  // try {
-  //   await prisma.endUser.create({ data: { name: data.name, email: data.email, password: hashedPassword } });
-  //   return { success: true, message: "Your account is successfully created.", defaultData: undefined };
-  // } catch (error) {
-  //   if (error instanceof Prisma.PrismaClientKnownRequestError) {
-  //     if (error.code === "P2002") {
-  //       return { success: false, message: "Email already exists.", defaultData: data };
-  //     } else {
-  //       console.log(error.code);
-  //       return { success: false, message: "An unexpected error occurred", defaultData: data };
-  //     }
-  //   }
+  try {
+    await prisma.endUser.create({ data: { name: data.name, email: data.email, password: hashedPassword } });
+    return { success: true, message: "Your account is successfully created.", defaultData: undefined };
+  } catch (error) {
+    if (error instanceof Prisma.PrismaClientKnownRequestError) {
+      if (error.code === "P2002") {
+        return { success: false, message: "Email already exists.", defaultData: data };
+      } else {
+        console.log(error.code);
+        return { success: false, message: "An unexpected error occurred", defaultData: data };
+      }
+    }
 
-  //   return { success: false, message: "An unexpected error occurred.", defaultData: data };
-  // }
+    return { success: false, message: "An unexpected error occurred.", defaultData: data };
+  }
 }
 
 export async function verifyEmail(_: any, formData: FormData) {

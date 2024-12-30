@@ -174,9 +174,9 @@ model EndUser {
   gender          UserGender?
   phone           String?     @unique @db.Char(8)
   role            Role        @default(USER)
-  code            String?      @db.Char(6)
-  code_expired_at DateTime?    @db.Timestamptz()
-  status          UserStatus  @default(ACTIVE)
+  code            String?     @db.Char(6)
+  code_expired_at DateTime?   @db.Timestamptz()
+  status          UserStatus  @default(PENDING)
   created_at      DateTime    @default(now())
   updated_at      DateTime    @updatedAt
 
