@@ -63,10 +63,10 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(({ className, varia
   };
 
   return (
-    <div className="w-fit relative">
-      <input value={inputValue} type={type !== "password" ? type : isPasswordVisible ? "text" : "password"} className={cn(inputVariants({ variant }), "pr-8", className)} ref={inputRef} onChange={handleChange} {...props} />
+    <div className="w-full lg:w-fit relative">
+      <input value={inputValue} type={type !== "password" ? type : isPasswordVisible ? "text" : "password"} className={cn(inputVariants({ variant }), "pr-10", type === "password" && "pr-[3.4rem]", className)} ref={inputRef} onChange={handleChange} {...props} />
       {isCancelVisible && <CancelIcon width={16} height={16} className="absolute top-1/2 right-2 -translate-y-[30%] pointer-events-auto cursor-pointer fill-slate-500 hover:fill-black" onClick={handleClear} />}
-      {type === "password" && (isPasswordVisible ? <VisibilityOffIcon width={16} height={16} onClick={handlePasswordVisibility} className={cn("absolute top-1/2 right-3 -translate-y-[28%] fill-slate-500 hover:fill-black cursor-pointer pointer-events-auto", isCancelVisible && "right-7")} /> : <VisibilityIcon width={18} height={18} onClick={handlePasswordVisibility} className={cn("absolute top-1/2 right-3 -translate-y-[28%] fill-slate-500 hover:fill-black cursor-pointer pointer-events-auto", isCancelVisible && "right-7")} />)}
+      {type === "password" && (isPasswordVisible ? <VisibilityOffIcon width={16} height={16} onClick={handlePasswordVisibility} className={cn("absolute top-1/2 right-3 -translate-y-[28%] fill-slate-500 hover:fill-black cursor-pointer pointer-events-auto", isCancelVisible && "right-8 lg:right-7")} /> : <VisibilityIcon width={18} height={18} onClick={handlePasswordVisibility} className={cn("absolute top-1/2 right-3 -translate-y-[28%] fill-slate-500 hover:fill-black cursor-pointer pointer-events-auto", isCancelVisible && "right-8 lg:right-7")} />)}
     </div>
   );
 });

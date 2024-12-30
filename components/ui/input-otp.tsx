@@ -17,7 +17,7 @@ const InputOTPSlot = React.forwardRef<React.ElementRef<"div">, React.ComponentPr
   const { char, hasFakeCaret, isActive } = inputOTPContext.slots[index];
 
   return (
-    <div ref={ref} className={cn("relative flex h-10 w-10 first:ms-0 last:me-0 mx-1 items-center justify-center border-y border-r rounded-md border-input text-sm transition-all border-l", isActive && "z-10 ring-2 ring-brand ring-offset-background", className)} {...props}>
+    <div ref={ref} className={cn("relative flex h-10 w-10 first:ms-0 last:me-0 mx-1 items-center justify-center border-y border-r rounded-md border-[#ddd] text-sm transition-all border-l", isActive && "z-10 ring-2 ring-brand border-transparent ring-offset-background", className)} {...props}>
       {char}
       {hasFakeCaret && (
         <div className="pointer-events-none absolute inset-0 flex items-center justify-center">

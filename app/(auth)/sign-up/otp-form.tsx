@@ -1,13 +1,16 @@
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Form, FormControl, FormDescription, FormField, FormItem, FormMessage } from "@/components/ui/form";
+import { Form, FormControl, FormDescription, FormField, FormItem } from "@/components/ui/form";
 import { InputOTP, InputOTPGroup, InputOTPSlot } from "@/components/ui/input-otp";
 import { REGEXP_ONLY_DIGITS } from "input-otp";
 import { Button } from "@/components/ui/button";
 import LoadingIcon from "@/icons/svg/loading";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import InfoIcon from "@/icons/svg/info";
+import Link from "next/link";
+import { useEffect, useState } from "react";
+import { cn } from "@/lib/utils";
 
 interface OTPFormProps {
   updateStep: React.Dispatch<React.SetStateAction<1 | 2 | 3>>;
@@ -20,53 +23,81 @@ const OTPFormSchema = z.object({
 });
 
 const OTPForm = ({ updateStep }: OTPFormProps) => {
+  const [resendTimer, setResendTimer] = useState(30);
+
+  useEffect(() => {
+    const x = setInterval(() => {
+      if (resendTimer > 0) setResendTimer((prev) => prev - 1);
+      else clearInterval(x);
+    }, 1000);
+
+    return () => {
+      clearInterval(x);
+    };
+  }, [resendTimer]);
+
   const form = useForm<z.infer<typeof OTPFormSchema>>({
     resolver: zodResolver(OTPFormSchema),
     defaultValues: {
       pin: "",
     },
+    reValidateMode: "onSubmit"
   });
 
   const onSubmit = async (data: z.infer<typeof OTPFormSchema>) => {
     console.log(data.pin);
     await new Promise((resolve) => setTimeout(resolve, 3000));
     form.setError("pin", { type: "server", message: "Invalid verfiication code" });
+    return;
   };
 
   return (
     <>
       {form.formState.errors.pin?.message && (
-        <Alert variant="error" className="mb-8 w-[400px]">
+        <Alert variant="error" className="mt-[30%] mb-2 w-full lg:mt-0 lg:mb-8 lg:w-[400px]">
           <InfoIcon width={20} height={20} className="fill-red-600" />
           <AlertTitle className="text-red-600 font-semibold">Error</AlertTitle>
           <AlertDescription className="text-red-600">{form.formState.errors.pin?.message}</AlertDescription>
         </Alert>
       )}
       <Form {...form}>
-        <label className="text-center text-2xl font-semibold">Verify Your Email</label>
+        <label className={cn("text-2xl mt-[50%] lg:mt-0 text-center lg:text-3xl font-semibold", form.formState.errors.pin?.message && "mt-4")}>Verify Your Email</label>
         <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col">
           <FormField
             control={form.control}
             name="pin"
             render={({ field }) => (
               <FormItem>
-                <FormDescription className="mt-4">Please enter the one-time password sent to your email.</FormDescription>
+                <FormDescription className="text-sm lg:text-[15px] mt-4">Please enter the one-time password sent to your email.</FormDescription>
                 <FormControl>
-                  <InputOTP disabled={form.formState.isSubmitting} maxLength={6} pattern={REGEXP_ONLY_DIGITS} {...field}>
-                    <InputOTPGroup>
-                      <InputOTPSlot index={0} />
-                      <InputOTPSlot index={1} />
-                      <InputOTPSlot index={2} />
-                      <InputOTPSlot index={3} />
-                      <InputOTPSlot index={4} />
-                      <InputOTPSlot index={5} />
-                    </InputOTPGroup>
-                  </InputOTP>
+                  <div className="flex flex-col items-center justify-center pt-2">
+                    <InputOTP autoFocus required disabled={form.formState.isSubmitting} maxLength={6} pattern={REGEXP_ONLY_DIGITS} {...field}>
+                      <InputOTPGroup>
+                        <InputOTPSlot index={0} />
+                        <InputOTPSlot index={1} />
+                        <InputOTPSlot index={2} />
+                        <InputOTPSlot index={3} />
+                        <InputOTPSlot index={4} />
+                        <InputOTPSlot index={5} />
+                      </InputOTPGroup>
+                    </InputOTP>
+                    <Button
+                      variant="link"
+                      type="button"
+                      disabled={resendTimer !== 0}
+                      onClick={() => {
+                        setResendTimer(30);
+                      }}
+                      className="text-[13px] text-blue-500 disabled:cursor-not-allowed mt-1 self-end disabled:text-slate-500 lg:text-sm hover:underline hover:disabled:no-underline hover:underline-offset-2"
+                    >
+                      Resend again{resendTimer !== 0 && <span>({resendTimer}s)</span>}
+                    </Button>
+                  </div>
                 </FormControl>
               </FormItem>
             )}
           />
-          <Button type="submit" className="mt-6 w-[8rem] h-[2.6rem] mx-auto" variant="primary" disabled={form.formState.isSubmitting}>
+          <Button type="submit" className="mt-2 w-[8rem] h-[2.6rem] mx-auto" variant="primary" disabled={form.formState.isSubmitting}>
             {form.formState.isSubmitting ? <LoadingIcon width={24} height={24} className="fill-white" /> : <span>Verify</span>}
           </Button>
         </form>

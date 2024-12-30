@@ -14,7 +14,7 @@ const Form = () => {
     if (step === 3)
       setTimeout(() => {
         router.push(url.SIGNIN), 1500;
-      });
+      }); 
   }, [step]);
 
   return (
