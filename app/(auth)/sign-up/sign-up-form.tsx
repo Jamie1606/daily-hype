@@ -6,10 +6,9 @@ import LoadingIcon from "@/icons/svg/loading";
 import { useActionState, useEffect } from "react";
 import { performSignUp } from "./action";
 import { cn } from "@/lib/utils";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import InfoIcon from "@/icons/svg/info";
 import url from "@/constant/url";
 import Link from "next/link";
+import Alert from "@/components/shared/alert";
 
 interface SignUpFormProps {
   updateStep: React.Dispatch<React.SetStateAction<1 | 2 | 3>>;
@@ -27,22 +26,7 @@ export default function SignUpForm({ updateStep }: SignUpFormProps) {
 
   return (
     <>
-      {state !== null &&
-        (state.success ? (
-          <Alert variant="success" className="mt-8 w-full lg:mb-8 lg:w-[500px]">
-            <InfoIcon width={20} height={20} className="fill-green-600" />
-            <AlertTitle className="text-green-600 font-semibold">Message</AlertTitle>
-            <AlertDescription className="text-green-600">{state.message}</AlertDescription>
-          </Alert>
-        ) : (
-          state.message && (
-            <Alert variant="error" className="mt-8 w-full lg:mb-8 lg:w-[500px]">
-              <InfoIcon width={20} height={20} className="fill-red-600" />
-              <AlertTitle className="text-red-600 font-semibold">Error</AlertTitle>
-              <AlertDescription className="text-red-600">{state?.message}</AlertDescription>
-            </Alert>
-          )
-        ))}
+      {state !== null && <Alert message={state.message} success={state.success} className="mt-8 w-full lg:mb-8 lg:w-[500px]" />}
 
       {/* Sign up form */}
       <form action={action} className="flex flex-col w-full mt-12 px-4 lg:mt-0 lg:w-fit lg:px-0">

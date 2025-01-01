@@ -5,21 +5,15 @@ import { Input } from "@/components/ui/input";
 import { useActionState } from "react";
 import { performSignIn } from "./action";
 import LoadingIcon from "@/icons/svg/loading";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import InfoIcon from "@/icons/svg/info";
+import Alert from "@/components/shared/alert";
 
 export default function SignInForm() {
   const [state, action, isPending] = useActionState(performSignIn, null);
 
   return (
     <>
-      {state !== null && !state.success && (
-        <Alert variant="error" className="mt-8 w-full lg:mb-8 lg:mt-0 lg:w-[500px]">
-          <InfoIcon width={20} height={20} className="fill-red-600" />
-          <AlertTitle className="text-red-600 font-semibold">Error</AlertTitle>
-          <AlertDescription className="text-red-600">{state.error}</AlertDescription>
-        </Alert>
-      )}
+      {state !== null && !state.success && <Alert success={false} message={state.message} className="mt-8 w-full lg:mb-8 lg:mt-0 lg:w-[500px]" />}
+      
       <form action={action} className="flex w-full flex-col lg:w-fit">
         <label className="text-center text-2xl font-semibold">Welcome Back</label>
         <label className="mt-4 text-[15px]">Email*</label>

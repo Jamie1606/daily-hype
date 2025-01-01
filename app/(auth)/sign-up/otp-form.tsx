@@ -6,11 +6,9 @@ import { InputOTP, InputOTPGroup, InputOTPSlot } from "@/components/ui/input-otp
 import { REGEXP_ONLY_DIGITS } from "input-otp";
 import { Button } from "@/components/ui/button";
 import LoadingIcon from "@/icons/svg/loading";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import InfoIcon from "@/icons/svg/info";
-import Link from "next/link";
 import { useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
+import Alert from "@/components/shared/alert";
 
 interface OTPFormProps {
   updateStep: React.Dispatch<React.SetStateAction<1 | 2 | 3>>;
@@ -41,7 +39,7 @@ const OTPForm = ({ updateStep }: OTPFormProps) => {
     defaultValues: {
       pin: "",
     },
-    reValidateMode: "onSubmit"
+    reValidateMode: "onSubmit",
   });
 
   const onSubmit = async (data: z.infer<typeof OTPFormSchema>) => {
@@ -53,13 +51,8 @@ const OTPForm = ({ updateStep }: OTPFormProps) => {
 
   return (
     <>
-      {form.formState.errors.pin?.message && (
-        <Alert variant="error" className="mt-[30%] mb-2 w-full lg:mt-0 lg:mb-8 lg:w-[400px]">
-          <InfoIcon width={20} height={20} className="fill-red-600" />
-          <AlertTitle className="text-red-600 font-semibold">Error</AlertTitle>
-          <AlertDescription className="text-red-600">{form.formState.errors.pin?.message}</AlertDescription>
-        </Alert>
-      )}
+      {form.formState.errors.pin?.message && <Alert success={false} message={form.formState.errors.pin?.message} className="mt-[30%] mb-2 w-full lg:mt-0 lg:mb-8 lg:w-[400px]" />}
+      
       <Form {...form}>
         <label className={cn("text-2xl mt-[50%] lg:mt-0 text-center lg:text-3xl font-semibold", form.formState.errors.pin?.message && "mt-4")}>Verify Your Email</label>
         <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col">
