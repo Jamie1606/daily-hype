@@ -5,7 +5,7 @@ import SignInForm from "./sign-in-form";
 
 const SignInPage = () => {
   return (
-    <div className="flex flex-col h-full px-4 py-4 lg:flex-row lg:h-screen w-screen lg:px-20 lg:py-12">
+    <div className="flex flex-col h-full px-4 py-4 w-screen lg:px-20 lg:flex-row lg:h-screen lg:py-12 2xl:px-24">
       <div className="flex flex-col w-full">
         <Link className="text-3xl tracking-wider font-bold cursor-pointer max-w-fit" href={url.HOME}>
           DAILYHYPE
@@ -28,9 +28,6 @@ const SignInPage = () => {
             fill
             className="object-cover"
             priority
-            sizes="(max-width: 768px) 100vw, 
-           (max-width: 1200px) 50vw, 
-           600px"
           />
         </div>
       </div>

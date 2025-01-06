@@ -10,7 +10,7 @@ const inputVariants = cva("flex h-10 w-full rounded-md border border-input bg-ba
   variants: {
     variant: {
       default: "ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
-      input: "focus-visible:border-brand focus-visible:border-2 focus-visible:outline-none",
+      input: "border-input border-[1.2px] focus-visible:border-brand focus-visible:border-2 focus-visible:outline-none",
     },
     defaultVariants: {
       variant: "default",
@@ -64,9 +64,11 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(({ className, varia
 
   return (
     <div className="w-full lg:w-fit relative">
-      <input value={inputValue} type={type !== "password" ? type : isPasswordVisible ? "text" : "password"} className={cn(inputVariants({ variant }), "pr-10", type === "password" && "pr-[3.4rem]", className)} ref={inputRef} onChange={handleChange} {...props} />
-      {isCancelVisible && <CancelIcon width={16} height={16} className="absolute top-1/2 right-2 -translate-y-[30%] pointer-events-auto cursor-pointer fill-slate-500 hover:fill-black" onClick={handleClear} />}
-      {type === "password" && (isPasswordVisible ? <VisibilityOffIcon width={16} height={16} onClick={handlePasswordVisibility} className={cn("absolute top-1/2 right-3 -translate-y-[28%] fill-slate-500 hover:fill-black cursor-pointer pointer-events-auto", isCancelVisible && "right-8 lg:right-7")} /> : <VisibilityIcon width={18} height={18} onClick={handlePasswordVisibility} className={cn("absolute top-1/2 right-3 -translate-y-[28%] fill-slate-500 hover:fill-black cursor-pointer pointer-events-auto", isCancelVisible && "right-8 lg:right-7")} />)}
+      <input value={inputValue} type={type !== "password" ? type : isPasswordVisible ? "text" : "password"} className={cn(inputVariants({ variant }), "pr-10", type === "password" && "pr-[3.4rem] 2xl:pr-[4.2rem]", className)} ref={inputRef} onChange={handleChange} {...props} />
+
+      {isCancelVisible && <CancelIcon width={16} height={16} className="absolute top-1/2 right-2 -translate-y-[30%] pointer-events-auto cursor-pointer fill-slate-500 hover:fill-black 2xl:w-5 2xl:h-5 2xl:top-[47%] 2xl:right-3" onClick={handleClear} />}
+
+      {type === "password" && (isPasswordVisible ? <VisibilityOffIcon width={16} height={16} onClick={handlePasswordVisibility} className={cn("absolute top-1/2 right-3 -translate-y-[28%] fill-slate-500 hover:fill-black cursor-pointer pointer-events-auto 2xl:w-5 2xl:h-5 2xl:top-[47%]", isCancelVisible && "right-8 lg:right-7 2xl:w-5 2xl:h-5 2xl:right-10 2xl:top-[47%]")} /> : <VisibilityIcon width={18} height={18} onClick={handlePasswordVisibility} className={cn("absolute top-1/2 right-3 -translate-y-[28%] fill-slate-500 hover:fill-black cursor-pointer pointer-events-auto 2xl:w-5 2xl:h-5 2xl:top-[47%]", isCancelVisible && "right-8 lg:right-7 2xl:w-5 2xl:h-5 2xl:right-10 2xl:top-[47%]")} />)}
     </div>
   );
 });
