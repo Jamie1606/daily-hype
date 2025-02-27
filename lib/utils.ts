@@ -8,3 +8,7 @@ export function cn(...inputs: ClassValue[]) {
 export async function delay(second: number) {
   return new Promise((resolve) => setTimeout(resolve, second));
 }
+
+export function generateOPT() {
+  return Math.floor(Math.random() * 900000 + 100000) + "";
+}

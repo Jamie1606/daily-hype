@@ -1,3 +1,5 @@
+"use client";
+
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -9,9 +11,11 @@ import LoadingIcon from "@/icons/svg/loading";
 import { useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
 import Alert from "@/components/shared/alert";
+import { verifyEmail } from "./action";
 
 interface OTPFormProps {
   updateStep: React.Dispatch<React.SetStateAction<1 | 2 | 3>>;
+  email: string;
 }
 
 const OTPFormSchema = z.object({
@@ -20,8 +24,9 @@ const OTPFormSchema = z.object({
   }),
 });
 
-const OTPForm = ({ updateStep }: OTPFormProps) => {
+const OTPForm = ({ email, updateStep }: OTPFormProps) => {
   const [resendTimer, setResendTimer] = useState(30);
+  const [success, setSuccess] = useState(false);
 
   useEffect(() => {
     const x = setInterval(() => {
@@ -43,16 +48,23 @@ const OTPForm = ({ updateStep }: OTPFormProps) => {
   });
 
   const onSubmit = async (data: z.infer<typeof OTPFormSchema>) => {
-    console.log(data.pin);
-    await new Promise((resolve) => setTimeout(resolve, 3000));
-    form.setError("pin", { type: "server", message: "Invalid verfiication code" });
-    return;
+    const result = await verifyEmail(email, data.pin);
+    if (result.success) {
+      setSuccess(true);
+      setTimeout(() => {
+        updateStep(3);
+      }, 1500);
+    } else {
+      form.setError("pin", { type: "server", message: result.message });
+    }
   };
 
   return (
     <>
       {form.formState.errors.pin?.message && <Alert success={false} message={form.formState.errors.pin?.message} className="mt-[30%] mb-2 w-full lg:mt-0 lg:mb-8 lg:w-[400px]" />}
-      
+
+      {success && <Alert success={true} message="Email verification successful." className="mt-[30%] mb-2 w-full lg:mt-0 lg:mb-8 lg:w-[400px]" />}
+
       <Form {...form}>
         <label className={cn("text-2xl mt-[50%] lg:mt-0 text-center lg:text-3xl font-semibold", form.formState.errors.pin?.message && "mt-4")}>Verify Your Email</label>
         <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col">
@@ -77,7 +89,7 @@ const OTPForm = ({ updateStep }: OTPFormProps) => {
                     <Button
                       variant="link"
                       type="button"
-                      disabled={resendTimer !== 0}
+                      disabled={resendTimer !== 0 || success}
                       onClick={() => {
                         setResendTimer(30);
                       }}
@@ -90,7 +102,7 @@ const OTPForm = ({ updateStep }: OTPFormProps) => {
               </FormItem>
             )}
           />
-          <Button type="submit" className="mt-2 w-[8rem] h-[2.6rem] mx-auto" variant="primary" disabled={form.formState.isSubmitting}>
+          <Button type="submit" className="mt-2 w-[8rem] h-[2.6rem] mx-auto" variant="primary" disabled={form.formState.isSubmitting || success}>
             {form.formState.isSubmitting ? <LoadingIcon width={24} height={24} className="fill-white" /> : <span>Verify</span>}
           </Button>
         </form>

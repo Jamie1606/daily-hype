@@ -175,7 +175,7 @@ model EndUser {
   phone           String?     @unique @db.Char(8)
   role            Role        @default(USER)
   code            String?     @db.Char(6)
-  code_expired_at DateTime?   @db.Timestamptz()
+  code_expired_at DateTime?   @db.Timestamp()
   status          UserStatus  @default(PENDING)
   created_at      DateTime    @default(now())
   updated_at      DateTime    @updatedAt
@@ -195,8 +195,8 @@ model UserSession {
   session_id       String   @id @default(uuid())
   device           String   @db.VarChar(50)
   refresh_token    String   @db.VarChar(255)
-  expired_at       DateTime @db.Timestamptz()
-  last_accessed_at DateTime @db.Timestamptz()
+  expired_at       DateTime @db.Timestamp()
+  last_accessed_at DateTime @db.Timestamp()
   is_active        Boolean  @default(true) @db.Boolean
   user_id          String
   created_at       DateTime @default(now())
@@ -322,7 +322,7 @@ model ReviewImage {
 
 model Delivery {
   delivery_id   String         @id @default(uuid())
-  delivery_date DateTime       @db.Timestamptz()
+  delivery_date DateTime       @db.Timestamp()
   status        DeliveryStatus @default(PENDING)
   user_id       String
   created_at    DateTime       @default(now())
@@ -348,7 +348,7 @@ model DeliveryDetail {
 
 model Refund {
   refund_id   String       @id @default(uuid())
-  refund_date DateTime     @db.Timestamptz()
+  refund_date DateTime     @db.Timestamp()
   description String?      @db.Text
   reason      String       @db.VarChar(150)
   status      RefundStatus @default(PENDING)

@@ -2,7 +2,7 @@ import Link from "next/link";
 
 export default function Footer() {
   return (
-    <div className="flex flex-col px-20 mt-16">
+    <div className="flex flex-col px-20 mt-16 mb-4">
       <label className="text-lg tracking-wider font-semibold">DAILYHYPE</label>
       <div className="flex justify-start mt-6 mb-5">
         <div className="flex flex-col text-slate-600 text-[15px] space-y-2">
@@ -17,8 +17,7 @@ export default function Footer() {
           <Link href="">Contact Us</Link>
         </div>
         <div className="flex flex-col ms-auto text-slate-600 text-[15px] space-y-2">
-          <label>SOCIAL MEDIA</label>
-          <label>Follow us on social media to find out the latest products</label>
+          <label className="max-w-96">DISCLAIMER: This website is a project for demonstration purposes only. The products listed here are not real, and we do not sell any items.</label>
         </div>
       </div>
       <div className="flex justify-between pt-5 border-t">
