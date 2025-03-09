@@ -1,0 +1,8 @@
+services:
+  postgres:
+    image: postgres:17 # Use the latest stable PostgreSQL version
+    container_name: daily_hype_postgres
+    env_file:
+      - .env.development
+    ports:
+      - "5432:5432"

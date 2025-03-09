@@ -9,21 +9,17 @@ import { cn } from "@/lib/utils";
 import url from "@/constant/url";
 import Link from "next/link";
 import Alert from "@/components/shared/alert";
+import { useRouter } from "next/navigation";
 
-interface SignUpFormProps {
-  updateStep: React.Dispatch<React.SetStateAction<1 | 2 | 3>>;
-  setEmail: React.Dispatch<React.SetStateAction<string>>;
-}
-
-export default function SignUpForm({ setEmail, updateStep }: SignUpFormProps) {
+export default function SignUpForm() {
   const [state, action, isPending] = useActionState(performSignUp, null);
   const emailInputRef = useRef<HTMLInputElement | null>(null);
+  const router = useRouter();
 
   useEffect(() => {
     if (state && state?.success) {
-      setEmail(emailInputRef.current?.value || "");
       setTimeout(() => {
-        updateStep(2);
+        router.push(url.SIGNIN);
       }, 1500);
     }
   }, [state]);

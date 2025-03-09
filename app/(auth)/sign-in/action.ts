@@ -21,7 +21,7 @@ export async function performSignIn(_: SignInActionResponse | null, formData: Fo
   }
 
   try {
-    const user = await prisma.endUser.findUnique({ where: { email: data.email, status: "ACTIVE" } });
+    const user = await prisma.endUser.findUnique({ where: { email: data.email, NOT: { OR: [{ status: "BANNED" }, { status: "DELETED" }] } } });
 
     if (!user || !user.user_id || !user.email || !user.password) {
       await delay(1000);
@@ -38,7 +38,7 @@ export async function performSignIn(_: SignInActionResponse | null, formData: Fo
     const cookieStore = await cookies();
     cookieStore.set({ name: "auth-token", value: token, httpOnly: true, maxAge: 3600, secure: false, sameSite: "lax", path: "/" });
 
-    return { success: true, message: "Sign in Success", defaultData: undefined };
+    return { success: true, role: user.role, message: "Sign in Success", defaultData: undefined };
   } catch (error) {
     console.log(error);
     return { success: false, message: "Internal server error", defaultData: data };

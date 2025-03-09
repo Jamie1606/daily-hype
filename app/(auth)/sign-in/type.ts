@@ -11,6 +11,7 @@ export type SignInFormData = z.infer<typeof SignInFormDataSchema>;
 
 export type SignInActionResponse = {
   success: boolean;
+  role?: "ADMIN" | "STAFF" | "USER";
   message: string;
   defaultData?: {
     email: string | null;
