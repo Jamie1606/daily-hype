@@ -17,7 +17,7 @@ export default function Footer() {
           <Link href="">Contact Us</Link>
         </div>
         <div className="flex flex-col ms-auto text-slate-600 text-[15px] space-y-2">
-          <label className="max-w-96">DISCLAIMER: This website is a project for demonstration purposes only. The products listed here are not real, and we do not sell any items.</label>
+          <label className="max-w-96">DISCLAIMER: This website is a project for demonstration purposes only. The products listed here are not real, and I do not sell any items.</label>
         </div>
       </div>
       <div className="flex justify-between pt-5 border-t">

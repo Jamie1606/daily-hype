@@ -10,6 +10,7 @@ body {
   :root {
     --brand: rgb(102, 126, 234);
     --brand-20: rgba(102, 126, 234, 0.2);
+    --brand-10: rgba(102, 126, 234, 0.1);
     --background: 0 0% 100%;
     --foreground: 222.2 84% 4.9%;
     --card: 0 0% 100%;

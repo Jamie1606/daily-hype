@@ -7,6 +7,9 @@ const url = {
   CONTACT: "/contact",
   DASHBOARD: "/dashboard",
   EXPLORE: "/explore",
+  COLORFORM: "/form/colour",
+  USERFORM: "/form/user",
+  PRODUCTFORM: "/form/product",
 } as const;
 
 export default url;

@@ -8,6 +8,7 @@ export default {
       colors: {
         brand: "var(--brand)",
         "brand-20": "var(--brand-20)",
+        "brand-10": "var(--brand-10)",
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",
         card: {
