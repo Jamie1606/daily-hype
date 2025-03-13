@@ -69,20 +69,17 @@ enum RefundStatus {
   CANCELLED
 }
 
+enum Gender {
+  MALE
+  FEMALE
+}
+
 model Category {
   category_id String   @id @default(uuid())
   name        String   @unique @db.VarChar(50)
   created_at  DateTime @default(now())
 
   productCategories ProductCategory[]
-}
-
-model Gender {
-  gender_id  String   @id @default(uuid())
-  name       String   @unique @db.VarChar(50)
-  created_at DateTime @default(now())
-
-  products Product[]
 }
 
 model Color {
@@ -110,11 +107,9 @@ model Product {
   unit_price   Decimal       @db.Decimal(10, 2)
   status       ProductStatus @default(IN_STOCK)
   total_rating Int           @default(0) @db.Integer
-  gender_id    String
+  gender       Gender        @default(MALE)
   created_at   DateTime      @default(now())
   updated_at   DateTime      @updatedAt
-
-  gender Gender @relation(fields: [gender_id], references: [gender_id])
 
   productCategories ProductCategory[]
   productImages     ProductImage[]
@@ -166,16 +161,16 @@ model ProductVariant {
 }
 
 model EndUser {
-  user_id         String      @id @default(uuid())
-  name            String      @db.VarChar(100)
-  email           String      @unique @db.VarChar(255)
-  password        String      @db.VarChar(255)
-  gender          UserGender?
-  phone           String?     @unique @db.Char(8)
-  role            Role        @default(USER)
-  status          UserStatus  @default(ACTIVE)
-  created_at      DateTime    @default(now())
-  updated_at      DateTime    @updatedAt
+  user_id    String      @id @default(uuid())
+  name       String      @db.VarChar(100)
+  email      String      @unique @db.VarChar(255)
+  password   String      @db.VarChar(255)
+  gender     UserGender?
+  phone      String?     @unique @db.Char(8)
+  role       Role        @default(USER)
+  status     UserStatus  @default(ACTIVE)
+  created_at DateTime    @default(now())
+  updated_at DateTime    @updatedAt
 
   productOrders ProductOrder[]
   addressBooks  AddressBook[]

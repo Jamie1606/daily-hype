@@ -6,6 +6,7 @@ const url = {
   HELP: "/help",
   CONTACT: "/contact",
   DASHBOARD: "/dashboard",
+  EXPLORE: "/explore",
 } as const;
 
 export default url;

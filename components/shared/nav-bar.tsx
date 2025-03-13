@@ -10,7 +10,7 @@ import NavLink from "./nav-link";
 
 const navLinks = [
   { label: "Home", url: url.HOME },
-  { label: "Explore", url: url.HELP },
+  { label: "Explore", url: url.EXPLORE },
   { label: "Man", url: url.HELP },
   { label: "Woman", url: url.HELP },
   { label: "Boy", url: url.HELP },

@@ -7,6 +7,7 @@ export default {
     extend: {
       colors: {
         brand: "var(--brand)",
+        "brand-20": "var(--brand-20)",
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",
         card: {
@@ -91,8 +92,8 @@ export default {
         "caret-blink": "caret-blink 1.25s ease-out infinite",
       },
       screens: {
-        'xs': '480px',
-        '3xl': '1920px',
+        xs: "480px",
+        "3xl": "1920px",
       },
     },
   },
